@@ -37,6 +37,9 @@ filteredSubmissions = submissions[`#VariationID` %in% ids &
 # clinical testing;provider interpretation
 # clinical testing;curation
 
+# Remove "-" in gene name
+filteredSubmissions = filteredSubmissions[gene_symbol != "-"]
+
 # Remove some columns to save space
 filteredVariants$PhenotypeList = NULL
 filteredVariants$PhenotypeIDS = NULL
@@ -57,3 +60,4 @@ ggsave("num_variants_submitted_histogram.png", plot, type = "cairo-png",
        width = 8, height = 6, dpi = 300, units = "in")
 sumVariantsPerSubmitter[, percent_variants := num_variants / sum(num_variants) * 100]
 sumVariantsPerSubmitter = sumVariantsPerSubmitter[order(num_variants, decreasing = T)]
+fwrite(sumVariantsPerSubmitter, "num_variants_submitted.csv")
