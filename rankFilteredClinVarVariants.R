@@ -55,21 +55,6 @@ heatmap.2(corrMatrix, margins = c(10, 12), srtCol = 45, dendrogram = "col",
           hclustfun=function(x) dendsort(hclust(x, method="ward.D2"), isReverse = T, type = "min"))
 dev.off()
 
-stop()
-
-# Generate heatmap
-# plot = ggplot(corr, aes(x = x, y = y, fill = corr, color = "")) + 
-#   geom_tile() + theme_minimal(base_size = 16) + 
-#   geom_text(aes(x = x, y = y, label = round(corr, digits = 2)), color = "black", size = 4) +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), 
-#         panel.grid.minor = element_blank()) +
-#   scale_fill_gradient2(low = viridis(5, direction = -1)[2], high = viridis(5, direction = -1)[4], 
-#                        midpoint = 0, limit = c(-1, 1), name="Pearson\nCorrelation", na.value="lightyellow") +
-#   labs(x = NULL, y = NULL) + scale_colour_manual(values = NA) + 
-#   guides(colour=guide_legend("No data", override.aes=list(fill="lightyellow", color = "lightgrey")))
-# ggsave("pearson_correlation_heatmap.png", plot, type = "cairo-png",
-#        width = 8, height = 6, dpi = 300, units = "in")
-
 # Only look at correlations represented by at least 20 genes
 corr = corr[num_common_genes >= 20]
 plot = ggplot(corr) + geom_histogram(aes(x = corr, y =..density..), bins = 40) +
