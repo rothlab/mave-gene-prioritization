@@ -10,9 +10,8 @@ variants = fread("variant_summary.txt")
 submissions = fread("submission_summary.txt")
 
 # Filter out variants that are
-# 1) single-nucleotide, missense variants, and
-filteredVariants = variants[Type == "single nucleotide variant" & 
-                              str_detect(Name, "\\(p\\..*\\)") & 
+# 1) missense variants, and
+filteredVariants = variants[str_detect(Name, "\\(p\\..*\\)") & 
                               !str_detect(Name, "\\(p\\..*(=|Ter)\\)")]
 
 # 2) are classified to have uncertain significance
