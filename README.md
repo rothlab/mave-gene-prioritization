@@ -25,7 +25,7 @@ literature curation only.
 ### Download ClinVar data set
 
 Download the `variant_summary.txt.gz` and `submission_summary.txt.gz` files from the
-[NCBI ClinVar FTP Site](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/).
+NCBI ClinVar FTP Site: <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited>.
 
 Unzip downloaded files and leave the text files in the root directory of this repo.
 
