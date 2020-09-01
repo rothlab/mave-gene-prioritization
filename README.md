@@ -33,8 +33,9 @@ A list of filtered variants (`filtered_variants.csv`) is provided for users to r
 
 However, because new variants are added to the ClinVar database regularly, we recommend users to download the most recent ClinVar dataset.
 
-Download the `variant_summary.txt.gz` and `submission_summary.txt.gz` files from the
-NCBI ClinVar FTP Site: <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited>.
+Download the [variant_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz) and [submission_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/submission_summary.txt.gz) files from the NCBI ClinVar FTP Site.
+
+Please refer to [this file](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/README) for headers of both files.
 
 Unzip downloaded files and leave the text files in the root directory of this repo.
 
@@ -65,3 +66,7 @@ Two CSV files may be generated as output:
 1. filtered_variants.csv: ClinVar variants that passed all filtering criteria. *This file will only be generated if it doesn't already exist.*
 
 2. genes_ranked_filtered_variants.csv: genes ranked by their unqiue ClinVar variants.
+
+## LICENSE
+
+MIT
