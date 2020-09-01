@@ -1,15 +1,18 @@
 # User manual
 
-Author: Kevin Kuang
+Author: Da (Kevin) Kuang
 
-Last update on: 2020-02-06
+Last update on: 2020-08-31
 
 ## Introduction
 
-This repo contains code to extract missense variants that had been observed in
+This repo contains code to:
+1. Extract missense variants that had been observed in
 "clinical testing" (as opposed to "literature only") in ClinVar.
 
-## Criteria
+2. Rank genes based on their number of unique variants of uncertain significance (VUS).
+
+## Selection Criteria
 
 The following selection criteria was applied:
 
@@ -22,62 +25,43 @@ literature curation only.
 
 ## Getting started
 
-### Download ClinVar data set
+### (Optional) Download ClinVar data set
+
+**Please note: if a `filtered_variants.csv` file exists, the filtering process will be skipped.**
+
+A list of filtered variants (`filtered_variants.csv`) is provided for users to reproduce the ranked list reported in the manuscript.
+
+However, because new variants are added to the ClinVar database regularly, we recommend users to download the most recent ClinVar dataset.
 
 Download the `variant_summary.txt.gz` and `submission_summary.txt.gz` files from the
 NCBI ClinVar FTP Site: <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited>.
 
 Unzip downloaded files and leave the text files in the root directory of this repo.
 
-### Filter ClinVar variants
+Please make sure the plain text files are named as `variant_summary.txt` and `submission_summary.txt`.
 
-In order to complete this part, you need to install the following R packages:
+### Install packacges
 
-```{r}
-data.table
-stringr
-magrittr
-ggplot2
-scales
-Cairo
-```
-
-Three CSV files will be generated as output:
-
-1. filtered_variants.csv: ClinVar variants that passed all filtering criteria.
-
-2. filtered_submissions.csv: Submitters associated with filtered Clivar variants.
-
-3. num_variants_submitted.csv: The number of filtered variants deposited to
-ClinVar by each submitter.
-
-Only the `filtered_variants.csv` file is relevant for downstream analysis
-described in the manuscript.
-
-### Pearson correlation of the number of variants deposited between submitters
-
-**This analysis is not in the manuscript.**
-
-In order to complete this part, you need to install the following R packages:
+In order to run the scripts below, you need to install these R packages:
 
 ```{r}
 data.table
 stringr
-magrittr
-ggplot2
-scales
-Cairo
-viridis
-gplots
-dendsort
 ```
 
-A heatmap (`pearson_correlation_heatmap_clustered.png`) will be generated to
-compare the pearson correlation of the number of variants deposited between submitters.
+### Rank genes by unique ClinVar variants
 
-If two submitters agree on the number of variants for most of genes in ClinVar,
-they will have a high pearson correlation.
+**Script: `rankClinVarGenes.R`**
 
-A stacked barplot (`submitters_enrichment_in_pearson_correlation.png`) will be
-generated to compare the composition of submitters in high PCC and low PCC
-categories.
+You may run the script by `source()`-ing it to 
+an interactive R session or by executing the following command:
+
+```{bash}
+Rscript rankClinVarGenes.R
+```
+
+Two CSV files may be generated as output:
+
+1. filtered_variants.csv: ClinVar variants that passed all filtering criteria. *This file will only be generated if it doesn't already exist.*
+
+2. genes_ranked_filtered_variants.csv: genes ranked by their unqiue ClinVar variants.
