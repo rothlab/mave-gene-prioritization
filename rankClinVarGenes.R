@@ -51,11 +51,12 @@ if (!hasFilteredList) {
   filteredVariants = fread("filtered_variants.csv")
 }
 
-# Rank genes by their number of unique VUS variants
-rankedGenes = unique(filteredVariants[HGNC_ID != "-" & !str_detect(GeneSymbol, "subset|cover")])
+# Rank genes by their number of unique missense VUS variants
+rankedGenes = unique(filteredVariants[HGNC_ID != "-" & !str_detect(GeneSymbol, "subset|cover"),
+                                      .(GeneSymbol, Name, HGNC_ID)])
 rankedGenes = rankedGenes[, .(num_variants = .N), by = c("GeneSymbol", "HGNC_ID")]
 rankedGenes = rankedGenes[order(num_variants, decreasing = T)]
-rankedGenes = rankedGenes[, .(symbol = GeneSymbol, hgnc_id = HGNC_ID, num_variants)]
+rankedGenes = rankedGenes[, .(symbol = GeneSymbol, hgnc_id = HGNC_ID, num_missense_vus_variants = num_variants)]
 
 # Save the ranked
 fwrite(rankedGenes, "genes_ranked_filtered_variants.csv")
