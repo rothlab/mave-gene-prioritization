@@ -29,10 +29,6 @@ literature curation only.
 
 **Please note: if a `filtered_variants.csv` file exists, the filtering process will be skipped.**
 
-A list of filtered variants (`filtered_variants.csv`) is provided for users to reproduce the ranked list reported in the manuscript.
-
-However, because new variants are added to the ClinVar database regularly, we recommend users to download the most recent ClinVar dataset.
-
 Download the [variant_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/variant_summary_2020-08.txt.gz) and [submission_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/submission_summary_2020-08.txt.gz) files from the NCBI ClinVar FTP Site.
 
 Please refer to [this file](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/README) for headers of both files.
