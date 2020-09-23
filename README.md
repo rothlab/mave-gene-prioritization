@@ -2,7 +2,7 @@
 
 Author: Da (Kevin) Kuang
 
-Last update on: 2020-08-31
+Last update on: 2020-09-23
 
 ## Introduction
 
@@ -10,24 +10,31 @@ This repo contains code to:
 1. Extract missense variants that had been observed in
 "clinical testing" (as opposed to "literature only") in ClinVar.
 
-2. Rank genes based on their number of unique variants of uncertain significance (VUS).
+2. Calculating movability and reappearance parameters using the aggregated and capped Invitae variant counts.
+
+3. Apply the movability and reappearance parameters to ClinVar genes, calculating their movability- and reappearance-weighted impact score (MARWIS), as well as their difficulty-adjusted impact score (DAIS).
+
+4. Rank ClinVar genes based on
+   1. Unique number of VUS in ClinVar,
+   2. Mobability- and Reappearance-weighted Impact Score (MARWIS), and
+   3. Difficulty-ajusted Impact Score (DAIS).
 
 ## Selection Criteria
 
 The following selection criteria was applied:
 
-1. missense variants,
+1. Missense variants,
 
-2. variants classified to have uncertain significance,
+2. Variants classified to have uncertain significance (i.e. VUS), and
 
-3. variants that are collected through clinical testing and not through
+3. Variants that are collected through clinical testing and not through
 literature curation only.
 
 ## Getting started
 
-### (Optional) Download ClinVar data set
+### Download ClinVar data set
 
-**Please note: if a `filtered_variants.csv` file exists, the filtering process will be skipped.**
+**Please note: if `filtered_variants.csv` and `missense_variants.csv` files exist, the filtering process will be skipped.**
 
 Download the [variant_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/variant_summary_2020-08.txt.gz) and [submission_summary.txt.gz](https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/submission_summary_2020-08.txt.gz) files from the NCBI ClinVar FTP Site.
 
@@ -57,11 +64,20 @@ an interactive R session or by executing the following command:
 Rscript rankClinVarGenes.R
 ```
 
+Two CSV files are needed as input:
+
+1. `invitae_variant_count.csv`: Aggregated per-gene level variant counts where the occurrence of each variant was capped at 7 (the same capping threshold used and documented in the manuscript).
+
+2. `gene_length.csv`: Protein-coding gene's proten length (i.e. number of amino acids) based on the canonical isoform according the the Ensembl database. 
+
 Two CSV files may be generated as output:
 
-1. filtered_variants.csv: ClinVar variants that passed all filtering criteria. *This file will only be generated if it doesn't already exist.*
+1. `missense_variants.csv`: Missense ClinVar variants.
+*This file will only be generated if it doesn't already exist.*
 
-2. genes_ranked_filtered_variants.csv: genes ranked by their unqiue ClinVar variants.
+2. `filtered_variants.csv`: ClinVar variants that passed all filtering criteria. *This file will only be generated if it doesn't already exist.*
+
+3. `ranked_clinvar_genes.csv`: ranked ClinVar genes.
 
 ## LICENSE
 
