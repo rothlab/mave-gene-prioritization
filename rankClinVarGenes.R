@@ -1,8 +1,11 @@
 library(data.table)
 library(stringr)
 
+###
+# STEP 1: filtering ClinVar variants
+###
 # If a filtered list of variants exists, skip the filtering
-hasFilteredList = file.exists("filtered_variants.csv")
+hasFilteredList = file.exists("filtered_variants.csv") && file.exists("missense_variants.csv")
 
 if (!hasFilteredList) {
   # Load ClinVar variants and submissions
@@ -45,8 +48,10 @@ if (!hasFilteredList) {
   # clinical testing;curation
   
   # Save the filtered list
+  fwrite(missenseVariants, "missense_variants.csv")
   fwrite(filteredVariants, "filtered_variants.csv")
 } else {
+  missenseVariants = fread("missense_variants.csv")
   filteredVariants = fread("filtered_variants.csv")
 }
 
@@ -68,11 +73,15 @@ merged = merged[, .(symbol = GeneSymbol, hgnc_id = HGNC_ID,
                     num_unique_missense = num_variants.x,
                     num_unique_missense_vus = num_variants.y)]
 
+###
+# STEP 2: Calculate movability and reappearance parameters
+###
 # Load Invitae variant count
-# NOTE: A simulated dataset (simulated_invitae.csv) is included as an 
-# demonstration of input data format. It was NOT derived from the actual
-# Invitae dataset used in the study.
-invitae = fread("simulated_invitae.csv")
+invitae = fread("invitae_variant_count.csv")
+invitae = invitae[, .(gene, missense_vus_unique = unique_vus, 
+                      missense_vus_movable_unique = movable_vus, 
+                      missense_vus_observed = capped_occurance_vus,
+                      missense_vus_movable_observed = observed_movable_vus)]
 
 # Load ClinVar variant count
 clinvar = merged
@@ -101,6 +110,9 @@ avg_missense_vus_patients_per_variant = mean(na.omit(merged$missense_vus_patient
 # Replace NA with 0 for downstream calculations
 for (j in names(merged)) set(merged,which(is.na(merged[[j]])),j,0)
 
+###
+# STEP 3: Apply the movability and reappearance parameters to ClinVar genes
+###
 # Calculate Regularized Movability Fraction (See Manuscript Section 2.4)
 pseudo = 8
 merged[, weighted_movability_fraction := 
@@ -131,6 +143,9 @@ for (col in which(sapply(merged, class) == "integer")) {
   merged[[col]] = lapply(merged[[col]], function(e) if (is.na(e)) 0 else e)
 }
 
+###
+# STEP 4: Rank genes
+###
 # Rank by three strategies (unique ClinVar missense variants, MARWIS, DAIS)
 ranked = merged
 ranked$clinvar_missense_vus = unlist(ranked$clinvar_missense_vus)
