@@ -2,7 +2,7 @@
 
 Author: Da (Kevin) Kuang
 
-Last update on: 2020-09-23
+Last update on: 2020-10-05
 
 ## Introduction
 
@@ -10,7 +10,7 @@ This repo contains code to:
 1. Extract missense variants that had been observed in
 "clinical testing" (as opposed to "literature only") in ClinVar.
 
-2. Calculating movability and reappearance parameters using the aggregated and capped Invitae variant counts.
+2. Calculate movability and reappearance parameters using the aggregated and capped Invitae variant counts.
 
 3. Apply the movability and reappearance parameters to ClinVar genes, calculating their movability- and reappearance-weighted impact score (MARWIS), as well as their difficulty-adjusted impact score (DAIS).
 
