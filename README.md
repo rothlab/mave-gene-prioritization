@@ -70,7 +70,7 @@ Two CSV files are needed as input:
 
 2. `gene_length.csv`: Protein-coding gene's proten length (i.e. number of amino acids) based on the canonical isoform according the the Ensembl database. 
 
-Two CSV files may be generated as output:
+Three CSV files may be generated as output:
 
 1. `missense_variants.csv`: Missense ClinVar variants.
 *This file will only be generated if it doesn't already exist.*
