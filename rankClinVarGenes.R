@@ -104,8 +104,8 @@ merged[, missense_vus_movability_fraction := missense_vus_movable_unique / misse
 avg_missense_vus_movability_fraction = mean(na.omit(merged$missense_vus_movability_fraction))
 
 # Calculate reappearance
-merged[, missense_vus_patients_per_variant := missense_vus_observed / missense_vus_unique]
-avg_missense_vus_patients_per_variant = mean(na.omit(merged$missense_vus_patients_per_variant))
+merged[, missense_vus_occurance_per_variant := missense_vus_observed / missense_vus_unique]
+avg_missense_vus_occurance_per_variant = mean(na.omit(merged$missense_vus_occurance_per_variant))
 
 # Replace NA with 0 for downstream calculations
 for (j in names(merged)) set(merged,which(is.na(merged[[j]])),j,0)
@@ -113,22 +113,22 @@ for (j in names(merged)) set(merged,which(is.na(merged[[j]])),j,0)
 ###
 # STEP 3: Apply the movability and reappearance parameters to ClinVar genes
 ###
-# Calculate Regularized Movability Fraction (See Manuscript Section 2.4)
+# Calculate Weighted Movability Fraction (See Manuscript Section 2.4)
 pseudo = 8
 merged[, weighted_movability_fraction := 
          (missense_vus_unique * missense_vus_movability_fraction + 
             pseudo * avg_missense_vus_movability_fraction) / 
          (missense_vus_unique + pseudo)]
 
-# Calcuate Weighted Patients per Variant (WPV)
-merged[, weighted_patients_per_variant := 
-         (missense_vus_unique * missense_vus_patients_per_variant + 
-            pseudo * avg_missense_vus_patients_per_variant) / 
+# Calcuate Weighted Reappearance per Variant
+merged[, weighted_occurance_per_variant := 
+         (missense_vus_unique * missense_vus_occurance_per_variant + 
+            pseudo * avg_missense_vus_occurance_per_variant) / 
          (missense_vus_unique + pseudo)]
 
-# Calculate Patient Weighted Movable VUS Count (PWMVC)
-merged[, patient_weighted_movable_vus_count := clinvar_missense_vus * 
-         weighted_movability_fraction * weighted_patients_per_variant]
+# Calculate Movability- and Reappearance-Weighted Impact Score (MARWIS)
+merged[, marwis := clinvar_missense_vus * 
+         weighted_movability_fraction * weighted_occurance_per_variant]
 
 # Get A.A. length
 geneLenth = fread("gene_length.csv")
@@ -136,7 +136,7 @@ merged = merge(merged, geneLenth[, .(hgnc_id, aa_length = canonical_aa_length)],
 
 # Calculate Difficulty-Adjusted Impact Score (DAIS)
 aaLengthFixed = 300
-merged[, difficulty_adjusted_impact_score := patient_weighted_movable_vus_count / (aa_length + aaLengthFixed)]
+merged[, dais := marwis / (aa_length + aaLengthFixed)]
 
 # Handle missing values in number-type columns
 for (col in which(sapply(merged, class) == "integer")) {
@@ -150,8 +150,8 @@ for (col in which(sapply(merged, class) == "integer")) {
 ranked = merged
 ranked$clinvar_missense_vus = unlist(ranked$clinvar_missense_vus)
 ranked[, rank_by_clinvar_vus := frank(ranked, -clinvar_missense_vus, ties.method = "random")]
-ranked[, rank_by_marwis := frank(ranked, -patient_weighted_movable_vus_count, ties.method = "random")]
-ranked[, rank_dais := frank(ranked, -difficulty_adjusted_impact_score, ties.method = "random")]
+ranked[, rank_by_marwis := frank(ranked, -marwis, ties.method = "random")]
+ranked[, rank_dais := frank(ranked, -dais, ties.method = "random")]
 
 # Save to file
 fwrite(ranked[order(rank_dais)], "ranked_clinvar_genes.csv")
