@@ -2,7 +2,7 @@
 
 Author: Da (Kevin) Kuang
 
-Last update on: 2020-10-05
+Last update on: 2020-10-22
 
 ## Introduction
 
@@ -14,14 +14,14 @@ This repo contains code to:
 
 3. Apply the movability and reappearance parameters to ClinVar genes, calculating their movability- and reappearance-weighted impact score (MARWIS), as well as their difficulty-adjusted impact score (DAIS).
 
-4. Rank ClinVar genes based on
+4. Rank ClinVar genes based on:
    1. Unique number of VUS in ClinVar,
    2. Mobability- and Reappearance-weighted Impact Score (MARWIS), and
    3. Difficulty-ajusted Impact Score (DAIS).
 
 ## Selection Criteria
 
-The following selection criteria was applied:
+The following selection criteria were applied:
 
 1. Missense variants,
 
@@ -66,18 +66,41 @@ Rscript rankClinVarGenes.R
 
 Two CSV files are needed as input:
 
-1. `invitae_variant_count.csv`: Aggregated per-gene level variant counts where the occurrence of each variant was capped at 7 (the same capping threshold used and documented in the manuscript).
+1. `invitae_variant_count.csv`: aggregated per-gene level variant counts where the occurrence of each variant was capped at 7 (the same capping threshold used and documented in the manuscript).
 
-2. `gene_length.csv`: Protein-coding gene's proten length (i.e. number of amino acids) based on the canonical isoform according the the Ensembl database. 
+2. `gene_length.csv`: protein-coding gene's proten length (i.e. number of amino acids) based on the canonical isoform according the the Ensembl database. 
 
 Three CSV files may be generated as output:
 
-1. `missense_variants.csv`: Missense ClinVar variants.
+1. `missense_variants.csv`: missense ClinVar variants.
 *This file will only be generated if it doesn't already exist.*
 
 2. `filtered_variants.csv`: ClinVar variants that passed all filtering criteria. *This file will only be generated if it doesn't already exist.*
 
 3. `ranked_clinvar_genes.csv`: ranked ClinVar genes.
+
+Header description for the final output file `ranked_clinvar_genes.csv`:
+
+|Header|Description|
+|---|---|
+|hgnc_id|HGNC ID|
+|gene|Gene symbol|
+|clinvar_missense_vus|Number of unique missesne VUS in ClinVar database|
+|missense_vus_unique|Number of unique missesne VUS in Invitae database|
+|missense_vus_movable_unique|Number of unique *movable* missesne VUS in Invitae database|
+|missense_vus_observed|Number of occurance of missesne VUS in Invitae database|
+|missense_vus_movable_observed|Number of occurance of *movable* missesne VUS in Invitae database|
+|from_invitae|Whether the gene was included both in Invitaea and ClinVar database. If FALSE, the gene was only included in ClinVar database|
+|missense_vus_movability_fraction|Fraction of unique missense VUS that are *movable* in Invitae database|
+|missense_vus_occurance_per_variant|Average number of occurance of missense VUS in Invitiae database|
+|weighted_movability_fraction|Weighted fraction of unique missense VUS that are *movable* in Invitae database; see Equation (2) in Section 2.4 of the manuscript|
+|weighted_occurance_per_variant|Weighted average number of occurance of missense VUS in Invitiae database; see Equation (4) in Section 2.4 of the manuscript|
+|marwis|Movability- and reappearance-weighted impact score; see Equation (6) in Section 2.4 of the manuscript|
+|aa_length|protein-coding gene's proten length (i.e. number of amino acids) based on the canonical isoform according the the Ensembl database|
+|dais|Difficulty-adjusted impact score; see Equation (7) in Section 2.5 of the manuscript|
+|rank_by_clinvar_vus|Rank by number of unique missense VUS in ClinVar database|
+|rank_by_marwis|Rank by MARWIS|
+|rank_dais|Rank by DAIS|
 
 ## LICENSE
 
